@@ -1,6 +1,7 @@
 package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -21,8 +22,14 @@ public class Account extends Base<Long> {
     @Email
     private String email;
 
+    @JsonIgnore
     @ManyToMany(cascade = {CascadeType.ALL})
     private Set<Chat> chats = new HashSet<>();
+
+    public Account(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 
     public Account() {
     }

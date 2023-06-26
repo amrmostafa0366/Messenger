@@ -13,8 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
 @Service
 public class ChatServiceImp implements ChatService {
     @Autowired
@@ -43,13 +41,13 @@ public class ChatServiceImp implements ChatService {
     }
 
     @Override
-    public Chat findByAccountsIn(Set<Account> accounts) {
-        return chatRepo.findByAccountsIn(accounts);
+    public Chat findByAccounts(Account account1, Account account2) {
+        return chatRepo.findByAccounts(account1,account2);
     }
 
     @Override
-    public boolean existsByAccounts(Set<Account> accounts) {
-        Chat chat = chatRepo.findByAccountsIn(accounts);
+    public boolean existsByAccounts(Account account1 , Account account2) {
+        Chat chat = chatRepo.findByAccounts(account1,account2);
         if (chat == null) {
             return true;
         } else {

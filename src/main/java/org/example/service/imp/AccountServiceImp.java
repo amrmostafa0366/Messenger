@@ -111,14 +111,12 @@ public class AccountServiceImp implements AccountService {
     public Chat addChat(Long account1Id, Long account2Id) {
         Account account1 = accountRepo.findById(account1Id).orElseThrow(() -> new NotFoundException("Account not found with id: " + account1Id));
         Account account2 = accountRepo.findById(account2Id).orElseThrow(() -> new NotFoundException("Account not found with id: " + account2Id));
-        Set<Account> accounts = new HashSet<>();
-        accounts.add(account1);
-        accounts.add(account2);
-        Chat checkedChat = chatService.findByAccountsIn(accounts);
-        if (checkedChat != null) {
-            return checkedChat;
+        Chat chat = chatService.findByAccounts(account1, account2);
+
+        if (chat != null) {
+            return chat;
         } else {
-            Chat chat = new Chat();
+            chat = new Chat();
             chat.setName(account1.getName() + "-" + account2.getName());
             chat.addAccount(account1);
             chat.addAccount(account2);
@@ -145,15 +143,41 @@ public class AccountServiceImp implements AccountService {
         }
     }
 
+    //    @Override
+//    public Chat sendMessage(Long accountId, Long chatId, Message message) {
+//        Account account = findById(accountId);
+//        Chat chat = chatService.findById(chatId);
+//        if (existsByIdAndChats(accountId, chat)) {
+//            message.setSender(account);
+//            return chatService.sendMessage(account, chat, message);
+//        }
+//        throw new NotFoundException("Chat Not Found In Your Chats");
+//    }
+
+    @Transactional
     @Override
-    public Chat sendMessage(Long accountId, Long chatId, Message message) {
-        Account account = findById(accountId);
-        Chat chat = chatService.findById(chatId);
-        if (existsByIdAndChats(accountId, chat)) {
-            message.setSender(account);
-            return chatService.sendMessage(account, chat, message);
+    public Chat sendMessage(Long account1Id, Long account2Id, Message message) {
+        Account account1 = findById(account1Id);
+        Account account2 = findById(account2Id);
+        message.setSender(account1);
+        Chat chat = chatService.findByAccounts(account1, account2);
+        System.out.println("abolo" + chat);
+        if (chat != null) {
+            return chatService.sendMessage(account1, chat, message);
+        } else {
+            chat = new Chat();
+            chat.setName(account1.getName() + "-" + account2.getName());
+            chat.addAccount(account1);
+            chat.addAccount(account2);
+
+            Chat insertedChat = chatService.insert(chat);
+            account1.addChat(insertedChat);
+            account2.addChat(insertedChat);
+            accountRepo.save(account1);
+            accountRepo.save(account2);
         }
-        throw new NotFoundException("Chat Not Found In Your Chats");
+        return chatService.sendMessage(account1, chat, message);
+
     }
 
     @Override

@@ -30,7 +30,8 @@ public interface AccountService {
 
     void deleteChat(Long user1Id, Long chatId);
 
-    Chat sendMessage(Long userId, Long chatId, Message message);
+//    Chat sendMessage(Long userId, Long chatId, Message message);
+    Chat sendMessage(Long senderId, Long receiverId, Message message);
 
     boolean existsByIdAndChats(Long accountId, Chat chat);
 

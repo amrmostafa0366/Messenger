@@ -106,10 +106,15 @@ public class AccountController {
 //    }
 
 
+//    @PostMapping("/send-message/{id}")
+//    public ResponseEntity<Chat> sendMessage(@PathVariable("id") Long accountId, @RequestParam("chatId") Long chatId, @RequestBody Message message) {
+//
+//        Chat result = accountService.sendMessage(accountId, chatId, message);
+//        return new ResponseEntity<>(result, HttpStatus.CREATED);
+//    }
     @PostMapping("/send-message/{id}")
-    public ResponseEntity<Chat> sendMessage(@PathVariable("id") Long accountId, @RequestParam("chatId") Long chatId, @RequestBody Message message) {
-
-        Chat result = accountService.sendMessage(accountId, chatId, message);
+    public ResponseEntity<Chat> sendMessage(@PathVariable("id") Long senderId, @RequestParam("receiverId") Long receiverId, @RequestBody Message message) {
+        Chat result = accountService.sendMessage(senderId, receiverId, message);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 //    @GetMapping("/chat-messages/{id}")

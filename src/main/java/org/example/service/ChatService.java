@@ -15,9 +15,9 @@ public interface ChatService {
     Chat insert(Chat chat);
 
 
-    Chat findByAccountsIn(Set<Account> accounts);
+    Chat findByAccounts(Account account1, Account account2);
 
-    boolean existsByAccounts(Set<Account> accounts);
+    boolean existsByAccounts(Account account1, Account account2);
 
     boolean existsById(Long id);
 
