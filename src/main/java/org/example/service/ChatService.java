@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
 @Service
 public interface ChatService {
 
@@ -26,7 +24,7 @@ public interface ChatService {
 
     void deleteMessage(Account account, Long chatId, Long messageId);
 
-    Page<Message> findAllMessages(Long userId, Long chatId, Pageable page);
+//    Page<Message> findAllMessages(Long chatId, Pageable page);
 
 //    boolean chatExists(Account account1, Account account2);
 
@@ -34,4 +32,5 @@ public interface ChatService {
 
     Chat sendMessage(Account account, Chat chat, Message message);
 
+    Page<Message> findByChat(Long chatId, Pageable page);
 }

@@ -26,28 +26,25 @@ public interface AccountService {
 
     void delete(Long id);
 
-    Chat addChat(Long user1Id, Long user2Id);
+    Chat addChat(Long account1Id, Long account2Id);
 
-    void deleteChat(Long user1Id, Long chatId);
+    void deleteChat(Long accountId, Long chatId);
 
-//    Chat sendMessage(Long userId, Long chatId, Message message);
     Chat sendMessage(Long senderId, Long receiverId, Message message);
 
-    boolean existsByIdAndChats(Long accountId, Chat chat);
+    void deleteMessage(Long account1Id, Long chatId, Long messageId);
 
-    void deleteMessage(Long user1Id, Long chatId, Long messageId);
-
-    Page<Message> findAllMessages(Long userId, Long chatId, Pageable page);
+    Page<Message> findAllMessages(Long accountId, Long chatId, Pageable page);
 
     boolean isValidProperty(String property, String entity);
+
+    boolean existsByIdAndChats(Long accountId, Chat chat);
 
     boolean existById(Long id);
 
     boolean existsByEmail(String email);
 
-    boolean existsByName(String email);
+    List<Chat> findChatsById(Long accountId);
 
-    boolean existsByChat(Chat chat);
-
-    Page<Chat> findAllChats(Long userId, Pageable page);
+    Chat findChatByIdAndChatId(Long accountId, Long chatId);
 }

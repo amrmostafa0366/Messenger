@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.HashSet;
 import java.util.Set;
+
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
@@ -58,13 +59,14 @@ public class Account extends Base<Long> {
         this.chats = chats;
     }
 
-    public void addChat(Chat chat){
+    public void addChat(Chat chat) {
         this.chats.add(chat);
     }
-    public void removeChat(Chat chat){
+
+    public void removeChat(Chat chat) {
         this.chats.remove(chat);
     }
 }
 /*
-* Account . add chat . send message
-* */
+ * Account . add chat . send message
+ * */

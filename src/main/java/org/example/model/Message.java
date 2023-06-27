@@ -1,5 +1,6 @@
 package org.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
@@ -32,4 +33,5 @@ public class Message extends Base<Long>{
     public void setSender(Account sender) {
         this.sender = sender;
     }
+
 }

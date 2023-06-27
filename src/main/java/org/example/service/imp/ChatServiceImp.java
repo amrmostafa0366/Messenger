@@ -42,12 +42,12 @@ public class ChatServiceImp implements ChatService {
 
     @Override
     public Chat findByAccounts(Account account1, Account account2) {
-        return chatRepo.findByAccounts(account1,account2);
+        return chatRepo.findByAccounts(account1, account2);
     }
 
     @Override
-    public boolean existsByAccounts(Account account1 , Account account2) {
-        Chat chat = chatRepo.findByAccounts(account1,account2);
+    public boolean existsByAccounts(Account account1, Account account2) {
+        Chat chat = chatRepo.findByAccounts(account1, account2);
         if (chat == null) {
             return true;
         } else {
@@ -55,19 +55,6 @@ public class ChatServiceImp implements ChatService {
         }
 
     }
-
-/*
-    @Transactional
-    @Override
-    public Chat addChat(Account account1, Account account2) {
-        if (!chatExists(account1, account2) && !chatExists(account1, account2)) {
-            chatRepo.save(chat);
-            account1.addChat(chat);
-            accountService.update(account1.getId(),account1);
-            return chat;
-        }
-        throw new ConflictException("This Chat Is Already Created Before");
-    }*/
 
     @Override
     public boolean existsById(Long id) {
@@ -86,17 +73,13 @@ public class ChatServiceImp implements ChatService {
     }
 
     @Override
-    public void deleteMessage(Account account, Long chatId, Long messageId) {
-
+    public Page<Message> findByChat(Long chatId, Pageable page) {
+        return chatRepo.findMessagesById(chatId, page);
     }
 
     @Override
-    public Page<Message> findAllMessages(Long userId, Long chatId, Pageable page) {
-        return null;
-    }
+    public void deleteMessage(Account account, Long chatId, Long messageId) {
 
-//    @Override
-//    public boolean chatExists(Account account1, Account account2) {
-//        return chatRepo.existsByAccount1AndAccount2(account1, account2);
-//    }
+
+    }
 }

@@ -17,10 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class AccountServiceImp implements AccountService {
@@ -30,6 +28,7 @@ public class AccountServiceImp implements AccountService {
     private ChatService chatService;
     @Autowired
     private MessageService messageService;
+
 
 
     @Override
@@ -64,7 +63,6 @@ public class AccountServiceImp implements AccountService {
         return accountRepo.save(account);
     }
 
-
     @Override
     public void delete(Long id) {
         if (existById(id)) {
@@ -84,12 +82,12 @@ public class AccountServiceImp implements AccountService {
         Sort sort;
         if (sortBy.isPresent()) {
             if (isValidProperty(sortBy.get(), entity)) {
-                sort = Sort.by(sortBy.get());
+                sort = Sort.by(Sort.Direction.DESC, sortBy.get());
             } else {
                 return null;
             }
         } else {
-            sort = Sort.by("id");
+            sort = Sort.by(Sort.Direction.DESC, "id");
         }
 
         return PageRequest.of(pageNumber.orElse(0), pageSize.orElse(10), sort);
@@ -104,7 +102,6 @@ public class AccountServiceImp implements AccountService {
             return false;
         }
     }
-
 
     @Transactional
     @Override
@@ -132,27 +129,22 @@ public class AccountServiceImp implements AccountService {
         }
     }
 
-
     @Override
     public void deleteChat(Long accountId, Long chaId) {
         if (existById(accountId) && chatService.existsById(chaId)) {
             Account account = accountRepo.findById(accountId).get();
-            chatService.deleteChat(account, chaId);
+            Chat chat = chatService.findById(chaId);
+            if (accountRepo.existsByIdAndChats(accountId, chat)) {
+                account.removeChat(chat);
+                accountRepo.save(account);
+            } else {
+                throw new NotFoundException(String.format("There Is No Chat In Our Database Match That Account Id "));
+
+            }
         } else {
             throw new NotFoundException(String.format("There Is No Record In Our Database Match That Id "));
         }
     }
-
-    //    @Override
-//    public Chat sendMessage(Long accountId, Long chatId, Message message) {
-//        Account account = findById(accountId);
-//        Chat chat = chatService.findById(chatId);
-//        if (existsByIdAndChats(accountId, chat)) {
-//            message.setSender(account);
-//            return chatService.sendMessage(account, chat, message);
-//        }
-//        throw new NotFoundException("Chat Not Found In Your Chats");
-//    }
 
     @Transactional
     @Override
@@ -180,31 +172,44 @@ public class AccountServiceImp implements AccountService {
 
     }
 
+
     @Override
-    public boolean existsByIdAndChats(Long accountId, Chat chat) {
-        return accountRepo.existsByIdAndChats(accountId, chat);
+    public Page<Message> findAllMessages(Long accountId, Long chatId, Pageable page) {
+        if (existById(accountId) && chatService.existsById(chatId)) {
+            Account account = accountRepo.findById(accountId).get();
+            Chat chat = chatService.findById(chatId);
+            if (existsByIdAndChats(accountId,chat)) {
+                //return chatService.findByChat(chat, page);
+                return chatService.findByChat(chatId, page);
+            } else {
+                return null;
+            }
+        }
+        throw new NotFoundException(String.format("There Is No Record In Our Database Match That Id "));
     }
 
     @Override
     public void deleteMessage(Long accountId, Long chatId, Long messageId) {
         if (existById(accountId) && chatService.existsById(chatId) && messageService.existById(messageId)) {
             Account account = accountRepo.findById(accountId).get();
-            chatService.deleteMessage(account, chatId, messageId);
+            Chat chat = chatService.findById(chatId);
+            Message message = messageService.findById(messageId);
+            if (existsByIdAndChats(accountId,chat) && message.getSender().equals(account)) {
+//                chatService.deleteMessage(account,chatId,messageId);
+                message.setContent("deleted");
+                messageService.update(message);
+            }else{
+                throw new NotFoundException("Chat Not Found");
+            }
         } else {
             throw new NotFoundException(String.format("There Is No Record In Our Database Match That Id "));
         }
     }
 
     @Override
-    public Page<Message> findAllMessages(Long accountId, Long chatId, Pageable page) {
-        if (existById(accountId) && chatService.existsById(chatId)) {
-            Account account = accountRepo.findById(accountId).get();
-            return chatService.findAllMessages(accountId, chatId, page);
-        } else {
-            throw new NotFoundException(String.format("There Is No Record In Our Database Match That Id "));
-        }
+    public boolean existsByIdAndChats(Long accountId, Chat chat) {
+        return accountRepo.existsByIdAndChats(accountId, chat);
     }
-
 
     @Override
     public boolean existById(Long id) {
@@ -217,21 +222,13 @@ public class AccountServiceImp implements AccountService {
     }
 
     @Override
-    public boolean existsByName(String name) {
-        return accountRepo.existsByName(name);
+    public List<Chat> findChatsById(Long accountId) {
+        return accountRepo.findChatsById(accountId);
     }
 
     @Override
-    public boolean existsByChat(Chat chat) {
-        if (accountRepo.existsByChats(chat)) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public Page<Chat> findAllChats(Long id, Pageable page) {
-        return accountRepo.findAllChats(id, page);
+    public Chat findChatByIdAndChatId(Long accountId, Long chatId) {
+        return accountRepo.findChatByIdAndChatId(accountId, chatId);
     }
 }
 

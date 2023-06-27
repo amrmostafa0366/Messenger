@@ -1,9 +1,6 @@
 package org.example.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -22,7 +19,7 @@ import java.util.Set;
 public class Chat extends Base<Long> {
     @NotBlank
     private String name;
-
+    @JsonIgnore
     @ManyToMany(mappedBy = "chats")
     private Set<Account> accounts = new HashSet<>();
     @OneToMany(cascade = {CascadeType.ALL})

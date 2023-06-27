@@ -1,7 +1,13 @@
 package org.example.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.example.model.Chat;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/chat")
@@ -12,8 +18,8 @@ public class ChatController {
 //
 //
 //    @GetMapping("/{id}")
-//    public ResponseEntity<Chat> findById(@PathVariable("id") @Min(value = 1) @Max(value = 100) Long id) {
-//        Chat result = chatService.findById(id);
+//    public ResponseEntity<Chat> findMessagesById(@PathVariable("id") @Min(value = 1) @Max(value = 100) Long id) {
+//        Chat result = chatService.findMessagesById(id);
 //        return new ResponseEntity<>(result, HttpStatus.OK);
 //    }
 //
@@ -51,6 +57,26 @@ public class ChatController {
 //    public ResponseEntity<Void> delete(@PathVariable Long id) {
 //        chatService.delete(id);
 //        return new ResponseEntity<>(HttpStatus.OK);
+//    }
+//
+//
+//    @GetMapping("/chats")
+//    public ResponseEntity<Page<Chat>> findAllChats(@PathVariable("id") Long accountId,
+//                                                   @RequestParam("pageSize") Optional<Integer> pageSize,
+//                                                   @RequestParam("pageNumber") Optional<Integer> pageNumber,
+//                                                   @RequestParam("sortBy") Optional<String> sortBy
+//    ) {
+//        Pageable page = accountService.paginationCheck(pageSize, pageNumber, sortBy, "Account");
+//        if ((page == null)) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//        Page<Chat> result = accountService.findAllChats(accountId, page);
+//        if (result != null && !result.isEmpty()) {
+//            return new ResponseEntity<>(result, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//
+//        }
 //    }
 
 }
